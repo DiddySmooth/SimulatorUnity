@@ -14,10 +14,11 @@ public class CityGenerator : MonoBehaviour{
         Debug.Log(grass);
         for (int i = 0; i < colorMap.Length; i++){
             Debug.Log("Loop");
+            int rowOverPoint = (width * height) - height;
             if(colorMap[i] == grass){
                 int num = Random.Range(min, max);
                 if(num == 0){
-                    if(i > height && i < (width * height) - height){
+                    if(i > height && i < rowOverPoint){
                         colorMap[i] = city;
                         colorMap[i + 1] = city;
                         colorMap[i + height] = city;
