@@ -1,41 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Tilemaps;
 public class CityGenerator : MonoBehaviour{
-    public static Texture2D TextureWithCities(Color[] colorMap, int width, int height){
-        Debug.Log("Cities Call");
-        Texture2D texture = new Texture2D (width, height);
-        Color grass = new Color (0.2499731f, 0.6226415f, 0.1497864f, 0);
-        Color city = new Color (1f, 0.058f, 0.749f, 0);
-        int min = 0;
-        int max = 700;
 
-        Debug.Log(grass);
-        for (int i = 0; i < colorMap.Length; i++){
-            Debug.Log("Loop");
-            int rowOverPoint = (width * height) - height;
-            if(colorMap[i] == grass){
-                int num = Random.Range(min, max);
-                if(num == 0){
-                    if(i > height && i < rowOverPoint){
-                        colorMap[i] = city;
-                        colorMap[i + 1] = city;
-                        colorMap[i + height] = city;
-                        colorMap[i + height + 1] = city;
-                    }else{
-                        colorMap[i] = city;
-                        colorMap[i + 1] = city;
+    [SerializeField] Tilemap terrainTilemap;
+
+    public Tile city;
+
+    public Tile grass2;
+    public Tile sand;
+    public Tile grass;
+    public void GenerateCities(int mapWidth, int mapHeight){
+        for (int y = 0; y < mapHeight; y++){
+            for(int x = 0; x < mapWidth; x++){
+                if( terrainTilemap.GetTile(new Vector3Int(x,y,0)) == grass || terrainTilemap.GetTile(new Vector3Int(x,y,0)) == grass2 || terrainTilemap.GetTile(new Vector3Int(x,y,0)) == sand){
+                    int rand = Random.Range(0,1000);
+                    if(rand == 0){
+                        terrainTilemap.SetTile(new Vector3Int(x,y,0), city);
+                        terrainTilemap.SetTile(new Vector3Int(x+1,y,0), city);
+                        terrainTilemap.SetTile(new Vector3Int(x,y+1,0), city);
+                        terrainTilemap.SetTile(new Vector3Int(x+1,y+1,0), city);
                     }
                 }
-
-                
             }
         }
-        texture.filterMode = FilterMode.Point;
-        texture.wrapMode = TextureWrapMode.Clamp;
-        texture.SetPixels (colorMap);
-        texture.Apply ();
-        return texture;
+        
     }
 }

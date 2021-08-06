@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class MapGenerator : MonoBehaviour{
 
-    public enum DrawMode {NoiseMap, ColorMap, CitiesMap};
+    public enum DrawMode {NoiseMap, ColorMap, CitiesMap, TileMap};
     public DrawMode drawMode;
     public int mapWidth;
     public int mapHeight;
@@ -16,6 +17,7 @@ public class MapGenerator : MonoBehaviour{
     public int seed;
     public Vector2 offset;
     public bool autoUpdate;
+    [SerializeField] Tilemap terrainTilemap;
     public TerrainType[] regions;
 
     void Start()
@@ -25,27 +27,24 @@ public class MapGenerator : MonoBehaviour{
     public void GenerateMap() {
         float[,] noiseMap = Noise.GenerateNoiseMap (mapWidth, mapHeight, seed, noiseScale, octaves, persistance, lacunarity, offset);
 
-        Color[] colorMap = new Color[mapWidth * mapHeight];
+
+
         for (int y = 0; y< mapHeight; y++){
             for (int x = 0; x < mapWidth; x++){
                 float currentHeight = noiseMap[x,y];
                 for (int i = 0; i < regions.Length; i++){
-                    if ( currentHeight <= regions [i].height) {
-                        colorMap [y * mapWidth + x] = regions [i].color;
+                    if(currentHeight <= regions [i].height) {
+
+
+                        terrainTilemap.SetTile(new Vector3Int(x,y,0), regions[i].tile);
                         break;
                     }
                 }
+                
             }
         }
+        gameObject.GetComponent<CityGenerator>().GenerateCities(mapWidth, mapHeight);
 
-        MapDisplay display = FindObjectOfType<MapDisplay> ();
-        if (drawMode == DrawMode.NoiseMap){
-            display.DrawTexure(TextureGenerator.TextureFromHeightMap(noiseMap));
-        }else if(drawMode == DrawMode.ColorMap){
-            display.DrawTexure(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
-        }else if(drawMode == DrawMode.CitiesMap){
-            display.DrawTexure(CityGenerator.TextureWithCities(colorMap, mapWidth, mapHeight));
-        }
     }
 
     void OnValidate() {
@@ -67,5 +66,5 @@ public class MapGenerator : MonoBehaviour{
 public struct TerrainType {
     public string name;
     public float height;
-    public Color color;
+    public Tile tile;
 }
