@@ -66,5 +66,5 @@ public class MapGenerator : MonoBehaviour{
 public struct TerrainType {
     public string name;
     public float height;
-    public Tile tile;
+    public RuleTile tile;
 }

@@ -27,7 +27,11 @@ public class Player : MonoBehaviour
         vertical = Input.GetAxisRaw("Vertical"); // -1 is down
 
         Vector3 pos = transform.position;
-        Debug.Log(terrainTilemap.GetTile(ConvertToVector3(pos)));
+        
+
+        if  (Input.GetKeyDown(("e"))){
+            Debug.Log(terrainTilemap.GetTile(ConvertToVector3(pos)));
+        }
     }
 
     void FixedUpdate()
